@@ -8,7 +8,7 @@ if __name__ == "__main__":
     image_name = "test.png"
 
     time.sleep(5)
-    hwnd = win32gui.FindWindow(None, "星战前夜：晨曦 - 我变强了")
+    hwnd = win32gui.FindWindow(None, "星战前夜：晨曦 - xxx你的角色名")
 
     while True:
         # 离站
