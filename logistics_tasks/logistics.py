@@ -22,7 +22,7 @@ class Logistics:
                 print("离站中...")
                 time.sleep(15)
         # 离站完成标志
-        time.sleep(2)
+        time.sleep(1)
         while True:
             Helper.screen_shot(hwnd, image_name)
             rectangle = Helper.find_image_position("target/departure_completed_flag.png", image_name, hwnd)
@@ -38,17 +38,40 @@ class Logistics:
     @staticmethod
     def go_to_the_road(hwnd, image_name):
         Helper.move_to_00()
+
+        # 判断是否在本地
+        Logistics.close_logistics_agent(hwnd, image_name)
+        time.sleep(0.5)
         Helper.screen_shot(hwnd, image_name)
-        rectangle = Helper.find_image_position("target/task_end_point.png", image_name, hwnd)
-        if rectangle is None:
-            time.sleep(1)
-            Helper.screen_shot(hwnd, image_name)
-            rectangle = Helper.find_image_position("target/dock.png", image_name, hwnd)
-            time.sleep(1)
+        rectangle = Helper.find_image_position("target/dock.png", image_name, hwnd)
+        if rectangle is not None:
+            print("在本地")
+            Helper.mouse_left_click(rectangle)
+            time.sleep(0.5)
+            Logistics.open_logistics_agent(hwnd, image_name)
+            return
+        Logistics.open_logistics_agent(hwnd, image_name)
+
+        Helper.screen_shot(hwnd, image_name)
+        rectangle = Helper.find_image_position("target/task_target.png", image_name, hwnd)
+        if rectangle is not None:
             Helper.mouse_left_click(rectangle)
             time.sleep(1)
 
-            print("当前星系直接停靠...")
+        Helper.screen_shot(hwnd, image_name)
+        rectangle = Helper.find_image_position("target/task_end_point.png", image_name, hwnd)
+        if rectangle is None:
+            count = 0
+            while count < 5:
+                time.sleep(0.5)
+                Helper.screen_shot(hwnd, image_name)
+                rectangle = Helper.find_image_position("target/dock.png", image_name, hwnd)
+                time.sleep(0.5)
+                if rectangle is not None:
+                    Helper.mouse_left_click(rectangle)
+                    print("当前星系直接停靠...")
+                    break
+                count += 1
         else:
             # 设为终点
             Logistics.set_end_point(hwnd, image_name)
@@ -68,7 +91,6 @@ class Logistics:
             else:
                 print('到站...')
                 return
-        time.sleep(1)
 
     # 打开物流代理人界面
     @staticmethod
@@ -104,32 +126,30 @@ class Logistics:
                 else:
                     print("接任务中...")
                     time.sleep(1)
+        count = 0
+        while count < 5:
+            Helper.screen_shot(hwnd, image_name)
+            rectangle = Helper.find_image_position('target/task_third.png', image_name, hwnd)
+            count += 1
+            if rectangle is not None:
+                Helper.mouse_left_click(rectangle)
+                time.sleep(1)
+                break
 
-        time.sleep(1)
-        Helper.screen_shot(hwnd, image_name)
-        rectangle = Helper.find_image_position('target/task_third.png', image_name, hwnd)
-        if rectangle is not None:
-            Helper.mouse_left_click(rectangle)
-            while True:
-                Helper.screen_shot(hwnd, image_name)
-                if Helper.find_image_position('target/task_third', image_name, hwnd) is None:
-                    break
-                else:
-                    print("接任务中...")
-                    time.sleep(1)
+
     # 关闭代理人面板
     @staticmethod
     def close_logistics_agent(hwnd, image_name):
         Helper.move_to_00()
         count = 0
-        time.sleep(1)
-        while count > 5:
+        time.sleep(0.5)
+        while count < 2:
             Helper.screen_shot(hwnd, image_name)
             rectangle = Helper.find_image_position("target/task_title.png", image_name, hwnd)
             if rectangle is not None:
-                time.sleep(1)
                 Helper.keyboard_input_combination(18, 77)
                 print("关闭代理人面板...")
+                time.sleep(1)
                 break
             else:
                 count = count + 1
@@ -156,15 +176,20 @@ class Logistics:
 
         Helper.screen_shot(hwnd, image_name)
         rectangle = Helper.find_image_position("target/open_task.png", image_name, hwnd)
-        time.sleep(1)
         Helper.mouse_left_click(rectangle)
         print('开始对话...')
-        time.sleep(3)
+        time.sleep(2)
+
+        Helper.screen_shot(hwnd, image_name)
+        rectangle = Helper.find_image_position("target/new_task.png", image_name, hwnd)
+        if rectangle is not None:
+            Helper.mouse_left_click(rectangle)
+            print('接任务...')
+            time.sleep(2)
 
         Helper.screen_shot(hwnd, image_name)
         rectangle = Helper.find_image_position("target/accept_task.png", image_name, hwnd)
         if rectangle is not None:
-            time.sleep(1)
             Helper.mouse_left_click(rectangle)
             print('接任务...')
         time.sleep(2)
@@ -181,33 +206,36 @@ class Logistics:
     # 移动任务道具到背包
     @staticmethod
     def move_task_prop_to_bag(hwnd, image_name):
-        while True:
+        # 点击物品机库
+        time.sleep(2)
+        count = 0
+        while count < 5:
             Helper.move_to_00()
-            # 点击物品机库
-            time.sleep(5)
             Helper.screen_shot(hwnd, image_name)
             rectangle = Helper.find_image_position("target/item_hangar.png", image_name, hwnd)
             Helper.mouse_left_click(rectangle)
             print("点击机库...")
             time.sleep(1)
+
             # 点击任务道具
             Helper.screen_shot(hwnd, image_name)
-            rectangle = Helper.find_image_position("target/task_props.png", image_name, hwnd)
-            if rectangle is None:
-                break
-            Helper.mouse_left_click(rectangle)
-            time.sleep(1)
-            print("点击任务道具...")
-            Helper.move_to_00()
-            time.sleep(1)
-            # 移动到船舱
+            rectangle = Helper.find_image_position("target/task_props_%d.png" % count, image_name, hwnd)
+            if rectangle is not None:
+                Helper.mouse_left_click(rectangle)
+                time.sleep(0.5)
+                print("点击任务道具...")
+                Helper.move_to_00()
+                time.sleep(0.5)
+                # 移动到船舱
+                moveToRectangle = Helper.find_image_position("target/hangar.png", image_name, hwnd)
+                Helper.mouse_left_drag(rectangle, moveToRectangle)
+                time.sleep(0.5)
+                print("移动任务道具到船舱...")
             Helper.screen_shot(hwnd, image_name)
-            rectangle = Helper.find_image_position("target/task_props.png", image_name, hwnd)
-            moveToRectangle = Helper.find_image_position("target/hangar.png", image_name, hwnd)
-            moveToRectangle[2] = moveToRectangle[2] + 40
-            Helper.mouse_left_drag(rectangle, moveToRectangle)
-            time.sleep(1)
-            print("移动任务道具到船舱...")
+            rectangle = Helper.find_image_position("target/success_task.png", image_name, hwnd)
+            if rectangle is not None:
+                break
+            count += 1
 
     # 交任务
     @staticmethod
@@ -217,23 +245,29 @@ class Logistics:
         while True:
             Helper.screen_shot(hwnd, image_name)
             time.sleep(1)
-            if Helper.find_image_position("target/open_task.png", image_name, hwnd) is not None:
-                break
-            elif Helper.find_image_position("target/task_target.png", image_name, hwnd) is not None:
+            if Helper.find_image_position("target/task_target.png", image_name, hwnd) is not None:
                 break
 
-        # 点击任务NPC
         Helper.screen_shot(hwnd, image_name)
-        rectangle = Helper.find_image_position("target/task_target.png", image_name, hwnd)
+        rectangle = Helper.find_image_position("target/question_mark.png", image_name, hwnd)
         if rectangle is not None:
             Helper.mouse_left_click(rectangle)
+            print("点击问号...")
             time.sleep(2)
-        # 开始对话
+
         Helper.screen_shot(hwnd, image_name)
-        rectangle = Helper.find_image_position("target/open_task.png", image_name, hwnd)
-        Helper.mouse_left_click(rectangle)
-        print("开始对话...")
-        time.sleep(2)
+        rectangle = Helper.find_image_position("target/open_task_1.png", image_name, hwnd)
+        if rectangle is not None:
+            Helper.mouse_left_click(rectangle)
+            print("点击任务...")
+            time.sleep(2)
+        else:
+            # 开始对话
+            Helper.screen_shot(hwnd, image_name)
+            rectangle = Helper.find_image_position("target/open_task.png", image_name, hwnd)
+            Helper.mouse_left_click(rectangle)
+            print("开始对话...")
+            time.sleep(2)
         # 完成任务
         Helper.screen_shot(hwnd, image_name)
         rectangle = Helper.find_image_position("target/complete_task.png", image_name, hwnd)
@@ -255,7 +289,6 @@ class Logistics:
         # 找到货物
         Helper.screen_shot(hwnd, image_name)
         rectangle = Helper.find_image_position("target/freight.png", image_name, hwnd)
-
         targetRectangle = [rectangle[0]-30, rectangle[1], rectangle[0] - 15, rectangle[1]+20]
         # 打开货物信息
         Helper.mouse_left_click(targetRectangle)
@@ -265,14 +298,22 @@ class Logistics:
         Helper.screen_shot(hwnd, image_name)
         rectangle = Helper.find_image_position("target/attributes.png", image_name, hwnd)
         # 找到属性按钮，向上截取货物信息
-        rectangle = [rectangle[0]-30, rectangle[1]-70, rectangle[0]+5, rectangle[1]-25]
-        Helper.screen_shot(hwnd, 'target/task_props.png', rectangle)
+        rectangle = [rectangle[0] - 15, rectangle[1] - 85, rectangle[2] - 15, rectangle[3] - 35]
+        Helper.screen_shot(hwnd, 'target/task_props_0.png', rectangle)
+        rectangle = [rectangle[0]+5, rectangle[1]+5, rectangle[2]-5, rectangle[3]-5]
+        Helper.screen_shot(hwnd, 'target/task_props_1.png', rectangle)
+        rectangle = [rectangle[0]+5, rectangle[1]+5, rectangle[2]-5, rectangle[3]-5]
+        Helper.screen_shot(hwnd, 'target/task_props_2.png', rectangle)
+        rectangle = [rectangle[0]+5, rectangle[1]+5, rectangle[2]-5, rectangle[3]-5]
+        Helper.screen_shot(hwnd, 'target/task_props_3.png', rectangle)
+        rectangle = [rectangle[0]+5, rectangle[1]+5, rectangle[2]-5, rectangle[3]-5]
+        Helper.screen_shot(hwnd, 'target/task_props_4.png', rectangle)
 
         # 关闭货物信息
-        Helper.screen_shot(hwnd, image_name)
-        rectangle = Helper.find_image_position("target/task_props.png", image_name, hwnd)
-        rectangle[0] = rectangle[2] + 20
-        rectangle[2] = rectangle[2] + 60
+        # Helper.screen_shot(hwnd, image_name)
+        # rectangle = Helper.find_image_position("target/task_props.png", image_name, hwnd)
+        rectangle[0] = rectangle[2] + 50
+        rectangle[2] = rectangle[2] + 100
         Helper.mouse_right_click(rectangle)
         time.sleep(1)
         Helper.screen_shot(hwnd, image_name)

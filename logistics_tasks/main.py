@@ -2,13 +2,14 @@ import time
 
 import win32gui
 
+from logistics_tasks.helper import Helper
 from logistics_tasks.logistics import Logistics
 
 if __name__ == "__main__":
     image_name = "test.png"
 
     time.sleep(5)
-    hwnd = win32gui.FindWindow(None, "星战前夜：晨曦 - xxx你的角色名")
+    hwnd = win32gui.FindWindow(None, "星战前夜：晨曦 [曙光服] - 繁华丶")
 
     while True:
         # 离站

@@ -76,14 +76,14 @@ class Helper:
         scaleY = (rectangle[3] - rectangle[1]) * 0.1
         x = np.random.randint(rectangle[0]+scaleX, rectangle[2]-scaleX)
         y = np.random.randint(rectangle[1]+scaleY, rectangle[3]-scaleY)
-        return x, y
+        return x-9, y-9
 
     # 鼠标左击
     @staticmethod
     def mouse_left_click(rectangle):
         x, y = Helper.get_random_position(rectangle)
-        print(x, y)
-        win32api.SetCursorPos((x, y-5))
+
+        win32api.SetCursorPos((x, y))
         time.sleep(0.2)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
         # 随机休眠
@@ -109,11 +109,9 @@ class Helper:
 
         win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-        # 随机休眠
-        time.sleep(np.random.rand() * 0.5)
+        time.sleep(0.2)
         win32api.SetCursorPos((move_to_x, move_to_y))
-        # 随机休眠
-        time.sleep(np.random.rand() * 0.5)
+        time.sleep(0.5)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
 
     # 右键拖拽
@@ -198,6 +196,13 @@ class Helper:
             startX, startY = max_loc
             endX, endY = (startX + img.shape[1], startY + img.shape[0])
             if False:
+                # rectangle = [startX, startY, endX, endY]
+                # rectangle = [rectangle[0] - 5, rectangle[1] - 70, rectangle[2] - 5, rectangle[1] - 10]
+                # rectangle = [rectangle[0], rectangle[1]-65, rectangle[2]-10, rectangle[1]-15]
+                # rectangle = [rectangle[0]+5, rectangle[1]-60, rectangle[2]-15, rectangle[1]-20]
+                # rectangle = [rectangle[0]+10, rectangle[1] - 55, rectangle[2] - 20, rectangle[1] - 25]
+                # cv2.rectangle(img_target, (rectangle[0], rectangle[1]), (rectangle[2], rectangle[3]), (0, 0, 255), 2)
+
                 cv2.rectangle(img_target, (startX, startY), (endX, endY), (0, 255, 255),
                               2)
                 cv2.imshow('result', img_target)
