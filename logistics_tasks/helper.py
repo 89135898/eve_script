@@ -171,11 +171,11 @@ class Helper:
     # 键盘输入组合键
     @staticmethod
     def keyboard_input_combination(key1, key2):
-        time.sleep(1)
+        time.sleep(0.5)
         win32api.keybd_event(key1, 0, 0, 0)
-        time.sleep(0.1)
+        time.sleep(0.2)
         win32api.keybd_event(key2, 0, 0, 0)
-        time.sleep(0.1)
+        time.sleep(0.2)
         win32api.keybd_event(key2, 0, win32con.KEYEVENTF_KEYUP, 0)
         time.sleep(0.5)
         win32api.keybd_event(key1, 0, win32con.KEYEVENTF_KEYUP, 0)

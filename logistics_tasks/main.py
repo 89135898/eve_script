@@ -19,7 +19,7 @@ if __name__ == "__main__":
         Logistics.open_logistics_agent(hwnd, image_name)
 
         # 赶路
-        Logistics.go_to_the_road(hwnd, image_name)
+        Logistics.the_next_task(hwnd, image_name)
 
         # 接任务
         Logistics.accept_task(hwnd, image_name)
@@ -30,20 +30,20 @@ if __name__ == "__main__":
         # 移动任务道具至背包
         Logistics.move_task_prop_to_bag(hwnd, image_name)
 
-        # 离站
-        Logistics.leave_the_station(hwnd, image_name)
-
         # 关闭背包面板
-        Logistics.close_bag(hwnd, image_name)
-
-        # 赶路
-        Logistics.go_to_the_road(hwnd, image_name)
-
-        # 关闭背包
         Logistics.close_bag(hwnd, image_name)
 
         # 关闭代理人面板
         Logistics.close_logistics_agent(hwnd, image_name)
+
+        # 离站
+        Logistics.leave_the_station(hwnd, image_name)
+
+        # 交任务
+        Logistics.complete_the_task(hwnd, image_name)
+
+        # 关闭背包
+        Logistics.close_bag(hwnd, image_name)
 
         # 交任务
         Logistics.complete_task(hwnd, image_name)

@@ -34,23 +34,10 @@ class Logistics:
         time.sleep(2)
         print("离站完成")
 
-    # 赶路
+    # 接任务
     @staticmethod
-    def go_to_the_road(hwnd, image_name):
+    def the_next_task(hwnd, image_name):
         Helper.move_to_00()
-
-        # 判断是否在本地
-        Logistics.close_logistics_agent(hwnd, image_name)
-        time.sleep(0.5)
-        Helper.screen_shot(hwnd, image_name)
-        rectangle = Helper.find_image_position("target/dock.png", image_name, hwnd)
-        if rectangle is not None:
-            print("在本地")
-            Helper.mouse_left_click(rectangle)
-            time.sleep(0.5)
-            Logistics.open_logistics_agent(hwnd, image_name)
-            return
-        Logistics.open_logistics_agent(hwnd, image_name)
 
         Helper.screen_shot(hwnd, image_name)
         rectangle = Helper.find_image_position("target/task_target.png", image_name, hwnd)
@@ -82,6 +69,60 @@ class Logistics:
                 if Helper.find_image_position("target/departure_completed_flag.png", image_name, hwnd) is not None:
                     Helper.keyboard_input_combination(17, 83)
                     break
+        while True:
+            Helper.screen_shot(hwnd, image_name)
+            rectangle = Helper.find_image_position("target/leave_station.png", image_name, hwnd)
+            if rectangle is None:
+                time.sleep(5)
+                print('赶路中...')
+            else:
+                print('到站...')
+                return
+
+    # 交任务
+    @staticmethod
+    def complete_the_task(hwnd, image_name):
+        Helper.move_to_00()
+
+        # 判断是否在本地
+        Logistics.close_logistics_agent(hwnd, image_name)
+        time.sleep(0.5)
+        Helper.screen_shot(hwnd, image_name)
+        rectangle = Helper.find_image_position("target/dock.png", image_name, hwnd)
+        if rectangle is not None:
+            print("在本地")
+            Helper.mouse_left_click(rectangle)
+            time.sleep(0.5)
+            Logistics.open_logistics_agent(hwnd, image_name)
+            return
+
+        Helper.screen_shot(hwnd, image_name)
+        rectangle = Helper.find_image_position("target/task_end_point.png", image_name, hwnd)
+        if rectangle is None:
+            count = 0
+            while count < 5:
+                time.sleep(0.5)
+                Helper.screen_shot(hwnd, image_name)
+                rectangle = Helper.find_image_position("target/dock.png", image_name, hwnd)
+                time.sleep(0.5)
+                if rectangle is not None:
+                    Helper.mouse_left_click(rectangle)
+                    print("当前星系直接停靠...")
+                    break
+                count += 1
+        else:
+            # 设为终点
+            Logistics.set_end_point(hwnd, image_name)
+            while True:
+                Helper.screen_shot(hwnd, image_name)
+                print("开始赶路...")
+                # 开启自动导航
+                if Helper.find_image_position("target/departure_completed_flag.png", image_name, hwnd) is not None:
+                    Helper.keyboard_input_combination(17, 83)
+                    break
+
+        Logistics.open_logistics_agent(hwnd, image_name)
+
         while True:
             Helper.screen_shot(hwnd, image_name)
             rectangle = Helper.find_image_position("target/leave_station.png", image_name, hwnd)
@@ -147,13 +188,19 @@ class Logistics:
             Helper.screen_shot(hwnd, image_name)
             rectangle = Helper.find_image_position("target/task_title.png", image_name, hwnd)
             if rectangle is not None:
-                Helper.keyboard_input_combination(18, 77)
+                # Helper.keyboard_input_combination(18, 77)
+                rectangle = Helper.find_image_position("target/close_task_target.png", image_name, hwnd)
+
+                Helper.mouse_right_click([rectangle[2]+30, rectangle[1], rectangle[2]+100, rectangle[3]])
+                time.sleep(0.5)
+                Helper.screen_shot(hwnd, image_name)
+                rectangle = Helper.find_image_position("target/close_window.png", image_name, hwnd)
+                Helper.mouse_left_click(rectangle)
                 print("关闭代理人面板...")
                 time.sleep(1)
                 break
             else:
-                count = count + 1
-                time.sleep(1)
+                break
 
     # 接任务
     @staticmethod
