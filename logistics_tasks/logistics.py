@@ -186,10 +186,9 @@ class Logistics:
         time.sleep(0.5)
         while count < 2:
             Helper.screen_shot(hwnd, image_name)
-            rectangle = Helper.find_image_position("target/task_title.png", image_name, hwnd)
+            rectangle = Helper.find_image_position("target/close_task_target.png", image_name, hwnd)
             if rectangle is not None:
                 # Helper.keyboard_input_combination(18, 77)
-                rectangle = Helper.find_image_position("target/close_task_target.png", image_name, hwnd)
 
                 Helper.mouse_right_click([rectangle[2]+30, rectangle[1], rectangle[2]+100, rectangle[3]])
                 time.sleep(0.5)
