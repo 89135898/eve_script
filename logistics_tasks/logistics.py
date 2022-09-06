@@ -294,12 +294,15 @@ class Logistics:
             if Helper.find_image_position("target/task_target.png", image_name, hwnd) is not None:
                 break
 
-        Helper.screen_shot(hwnd, image_name)
-        rectangle = Helper.find_image_position("target/question_mark.png", image_name, hwnd)
-        if rectangle is not None:
-            Helper.mouse_left_click(rectangle)
-            print("点击问号...")
-            time.sleep(2)
+        count = 0
+        while count < 5:
+            Helper.screen_shot(hwnd, image_name)
+            rectangle = Helper.find_image_position("target/question_mark.png", image_name, hwnd)
+            if rectangle is not None:
+                Helper.mouse_left_click(rectangle)
+                print("点击问号...")
+                time.sleep(2)
+                break
 
         Helper.screen_shot(hwnd, image_name)
         rectangle = Helper.find_image_position("target/open_task_1.png", image_name, hwnd)
@@ -314,18 +317,25 @@ class Logistics:
             Helper.mouse_left_click(rectangle)
             print("开始对话...")
             time.sleep(2)
-        # 完成任务
-        Helper.screen_shot(hwnd, image_name)
-        rectangle = Helper.find_image_position("target/complete_task.png", image_name, hwnd)
-        Helper.mouse_left_click(rectangle)
-        time.sleep(2)
-        print("完成任务...")
-
-        time.sleep(2)
-        Helper.screen_shot(hwnd, image_name)
-        rectangle = Helper.find_image_position("target/close_task.png", image_name, hwnd)
-        Helper.mouse_left_click(rectangle)
-        print('关闭对话...')
+        count = 0
+        while count < 5:
+            # 完成任务
+            Helper.screen_shot(hwnd, image_name)
+            rectangle = Helper.find_image_position("target/complete_task.png", image_name, hwnd)
+            if rectangle is not None:
+                Helper.mouse_left_click(rectangle)
+                time.sleep(2)
+                print("完成任务...")
+                break
+        count = 0
+        while count < 5:
+            time.sleep(1)
+            Helper.screen_shot(hwnd, image_name)
+            rectangle = Helper.find_image_position("target/close_task.png", image_name, hwnd)
+            if rectangle is not None:
+                Helper.mouse_left_click(rectangle)
+                print("关闭对话...")
+                break
 
     # 获取货物图片
     @staticmethod
