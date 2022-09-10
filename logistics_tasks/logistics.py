@@ -274,9 +274,10 @@ class Logistics:
                 time.sleep(0.5)
                 # 移动到船舱
                 moveToRectangle = Helper.find_image_position("target/hangar.png", image_name, hwnd)
-                Helper.mouse_left_drag(rectangle, moveToRectangle)
-                time.sleep(0.5)
-                print("移动任务道具到船舱...")
+                if moveToRectangle is not None:
+                    Helper.mouse_left_drag(rectangle, moveToRectangle)
+                    time.sleep(0.5)
+                    print("移动任务道具到船舱...")
             Helper.screen_shot(hwnd, image_name)
             rectangle = Helper.find_image_position("target/success_task.png", image_name, hwnd)
             if rectangle is not None:
@@ -298,6 +299,9 @@ class Logistics:
         while count < 5:
             Helper.screen_shot(hwnd, image_name)
             rectangle = Helper.find_image_position("target/question_mark.png", image_name, hwnd)
+            if rectangle is None:
+                rectangle = Helper.find_image_position("target/question_mark_1.png", image_name, hwnd)
+
             if rectangle is not None:
                 Helper.mouse_left_click(rectangle)
                 print("点击问号...")

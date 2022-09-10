@@ -108,11 +108,11 @@ class Helper:
         move_to_x, move_to_y = Helper.get_random_position(moveToRectangle)
 
         win32api.SetCursorPos((x, y))
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
         time.sleep(0.2)
         win32api.SetCursorPos((move_to_x, move_to_y))
         time.sleep(0.5)
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, move_to_x, move_to_y, 0, 0)
 
     # 右键拖拽
     @staticmethod
@@ -165,7 +165,7 @@ class Helper:
     def keyboard_input(key):
         win32api.keybd_event(key, 0, 0, 0)
         # 随机休眠
-        time.sleep(np.random.rand() * 0.25)
+        time.sleep(0.5)
         win32api.keybd_event(key, 0, win32con.KEYEVENTF_KEYUP, 0)
 
     # 键盘输入组合键
@@ -192,7 +192,7 @@ class Helper:
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
         # 获取匹配结果中最大的坐标
         print(image, max_val)
-        if max_val > 0.8:
+        if max_val > 0.9:
             startX, startY = max_loc
             endX, endY = (startX + img.shape[1], startY + img.shape[0])
             if False:
